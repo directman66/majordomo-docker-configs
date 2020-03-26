@@ -1,0 +1,25 @@
+version: '2'
+services:
+  majordomo:
+    build: ./app-conf/debian/
+    volumes:
+      - './app:/var/www/html'
+    network_mode: "host"
+    restart: always
+  mysql:
+    image: linuxserver/mariadb
+    ports:
+      - '3306:3306'
+      - '666:80'
+    volumes:
+      - ./db-data:/var/lib/mysql
+      - ./app-conf/debian/mysql:/etc/mysql
+    environment:
+      - MYSQL_HOST=127.0.0.1
+      - MYSQL_ROOT_PASSWORD=rootpsw
+      - MYSQL_DATABASE=db_terminal
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=userpsw
+    command:
+      mysqld --innodb-flush-method=littlesync --innodb-use-native-aio=OFF
+    restart: always
